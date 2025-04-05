@@ -18,7 +18,7 @@ import javax.swing.table.DefaultTableModel;
  * @author gutyc
  */
 
-
+//checando branches
 //NUEVA CLASE PARA ALMACENAR SÓLO LAS CONSULTAS SQL (MEJOR ORGANIZACIÓN)
 
 
