@@ -4,7 +4,9 @@
  */
 package abc;
 
+import com.lowagie.text.DocumentException;
 import java.awt.event.ItemEvent;
+import java.io.FileNotFoundException;
 import javax.swing.JOptionPane;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -17,6 +19,8 @@ import javax.swing.table.DefaultTableModel;
 import java.sql.ResultSetMetaData;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableModel;
@@ -482,10 +486,15 @@ public class mainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_nuevoBotonActionPerformed
 
     private void eliminarBoton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarBoton1ActionPerformed
-        DefaultTableModel modelo = (DefaultTableModel) registrosTable.getModel();
         
-        for(int i = 0; i < modelo.getRowCount(); i++) {
-            System.out.println(modelo.getValueAt(i, 0));
+        try {
+            Export.Imprimir();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(mainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (DocumentException ex) {
+            Logger.getLogger(mainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(mainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_eliminarBoton1ActionPerformed
 
