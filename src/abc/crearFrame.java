@@ -6,10 +6,11 @@ package abc;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Connection;
+
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import java.sql.Connection;
-import java.sql.DriverManager;
+
 
 /**
  *
@@ -17,9 +18,6 @@ import java.sql.DriverManager;
  */
 public class crearFrame extends javax.swing.JFrame {
 
-    /**
-     * Creates new form crearFrame
-     */
     String entidad;
     
     public crearFrame(DefaultTableModel crearTableModel, String entidad) {
@@ -27,8 +25,7 @@ public class crearFrame extends javax.swing.JFrame {
         this.crearTable.setModel(crearTableModel);
         this.crearTable.setRowHeight(20);
         
-        this.entidad = entidad;
-        
+        this.entidad = entidad;   
     }
     
 
@@ -92,36 +89,36 @@ public class crearFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void crearBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_crearBotonActionPerformed
-        Connection c = ConexionSQL.conectar();
-        String preparedString = "INSERT INTO " + entidad + "(" + this.crearTable.getColumnName(1);
         
+        Connection c = ConexionSQL.conectar();
+        
+        
+        String preparedString = "INSERT INTO " + entidad + "(" + this.crearTable.getColumnName(1);
         for(int i = 2; i < this.crearTable.getColumnCount(); i++){
             preparedString += " , " + this.crearTable.getColumnName(i);
         }
         preparedString += ")";
+        
+        
                 
         preparedString += " values ('" + this.crearTable.getValueAt(0,1) + "' ";
-        
         for (int i = 2; i < this.crearTable.getColumnCount(); i++) {
             preparedString += ", '" + this.crearTable.getValueAt(0, i) + "'";
         }
         preparedString += " )";
 
+        
+        
         try {
             PreparedStatement pSt = c.prepareStatement(preparedString);
-   
             pSt.executeUpdate();
+            
         } catch (SQLException ex) {
           JOptionPane.showMessageDialog(null, "ERROR " + ex.toString());
         }finally{
             ConexionSQL.desconectar(c);
         } 
     }//GEN-LAST:event_crearBotonActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton crearBoton;
