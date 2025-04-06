@@ -6,48 +6,41 @@ package abc;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
+import com.lowagie.text.PageSize;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+
 import java.awt.Color;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.sql.ResultSetMetaData;
 
-import java.awt.event.ItemEvent;
-import javax.swing.JOptionPane;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import javax.swing.JOptionPane;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
 import java.sql.ResultSetMetaData;
-import java.util.HashMap;
-import java.util.Map;
-import javax.swing.JFrame;
-import javax.swing.event.TableModelEvent;
-import javax.swing.table.TableModel;
 
+import javax.swing.JOptionPane;
 
 
 
 public class Export {
     
-    public static void Imprimir() throws FileNotFoundException, DocumentException, SQLException{
+    public static void Imprimir(String currStatement) throws FileNotFoundException, DocumentException, SQLException{
         Connection c = ConexionSQL.conectar();
         // HACER LA CONSULTA
         ConexionSQL.conectar();
-        String consulta = "SELECT * FROM ESTUDIANTES";
         Statement st = c.createStatement();
-        ResultSet rs = st.executeQuery(consulta);
+        //Ahora si genera la última consulta con la cual se crea la tabla.
+        ResultSet rs = st.executeQuery(currStatement);
         
         
         //Documento PDF
-        Document documento = new Document();
+        //Nuevos cambios para que la página sea horizontal
+        Document documento = new Document(PageSize.A4.rotate());
         
         //Guardar el documento en documentos jaja
         String nombre = JOptionPane.showInputDialog(null, "Introduce el nombre del archivo: ");
@@ -94,6 +87,5 @@ public class Export {
         documento.close();
         
         JOptionPane.showMessageDialog(null, "Documento generado en " + ruta);
-        
     }   
 }

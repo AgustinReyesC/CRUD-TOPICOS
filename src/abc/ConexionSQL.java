@@ -8,10 +8,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
 import java.util.Map;
+
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -21,12 +22,10 @@ import javax.swing.table.DefaultTableModel;
 //checando branches
 //NUEVA CLASE PARA ALMACENAR SÓLO LAS CONSULTAS SQL (MEJOR ORGANIZACIÓN)
 
-
 public class ConexionSQL {
     
-    
     public static Connection conectar(){
-               Connection c = null;
+        Connection c = null;
                
         try {
             String cadena = "jdbc:sqlserver://localhost:1433;databaseName=BIBLIOTECA;integratedSecurity=false;encrypt=true;trustServerCertificate=true";
@@ -71,13 +70,15 @@ public class ConexionSQL {
     
     
     public static void modificarUnRegistro(String entidad, int renglon, JTable registrosTable, Map<String, String> dic){
-        Connection c = conectar();             
+        Connection c = conectar(); 
+        
+        
         String preparedString = "UPDATE " + entidad + " SET " + registrosTable.getColumnName(1) + " = '" +  registrosTable.getValueAt(renglon, 1)  + "'";
         for(int i = 2; i < registrosTable.getColumnCount(); i++){
             preparedString += ", " + registrosTable.getColumnName(i) + " = '" +  registrosTable.getValueAt(renglon, i) + "'";
         }
-
         preparedString += "WHERE " + dic.get(entidad) + " = " + registrosTable.getValueAt(renglon, 0);
+        
         
         PreparedStatement oPS;
         try {
@@ -89,27 +90,5 @@ public class ConexionSQL {
         } finally {
             desconectar(c);
         }
-    }
-    
-    
-    /*
-    //nuevas
-    public static DefaultTableModel busquedasSQL(String entidad, String atributo, String valor) {
-        Connection c = conectar();
-        String preparedString = "SELECT * FROM " + entidad + " WHERE " + atributo + " = " + valor;
-        
-        PreparedStatement oPS;
-        
-        try {
-            
-        }
-    }*/
-    
-    
-    
-    
-    
-    
-    
-    
+    } 
 }
