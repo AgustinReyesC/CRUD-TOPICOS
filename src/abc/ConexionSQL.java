@@ -32,7 +32,7 @@ public class ConexionSQL {
                
         try {
             Class.forName("com.mysql.jdbc.Driver");//cargar el driver d mysql a memoria, esto visto en: https://stackoverflow.com/questions/5556664/how-to-fix-no-suitable-driver-found-for-jdbcmysql-localhost-dbname-error-w
-            String cadena = "jdbc:mysql://localhost:3306/escuela?useSSL=false&serverTimezone=UTC";
+            String cadena = "jdbc:mysql://localhost:3306/escuela?useUnicode=true&characterEncoding=utf8";
             
             c =  DriverManager.getConnection(cadena,"root","");  
             c.setAutoCommit(true);

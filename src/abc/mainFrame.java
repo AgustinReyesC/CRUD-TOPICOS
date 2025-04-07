@@ -53,6 +53,11 @@ public class mainFrame extends javax.swing.JFrame {
         //desactivo los botones de modificar
         this.eliminarBoton.setEnabled(false);
         this.aplicarCambiosBoton.setEnabled(false);
+        
+        //desactivo los elementos de buscar
+        this.jTextField1.setEnabled(false);
+        this.entidadComBox1.setEnabled(false);
+        
         mostrarDesdeNRegistros(this.entidadComBox.getSelectedItem() + "", 0, paginaDeRegistro * 24, false, "", "");
         
         //Crear el mapa para encontrar IDs
@@ -133,7 +138,7 @@ public class mainFrame extends javax.swing.JFrame {
         //los hago no editables
         this.registrosTable.setModel(model);
         this.registrosTable.setEnabled(false);
-        this.modificarCheckBox.setSelected(false);
+        this.buscarCheckBox.setSelected(false);
             
         } catch (SQLException ex) {
           JOptionPane.showMessageDialog(null, "ERROR DE SQL " + ex.toString());
@@ -188,6 +193,7 @@ public class mainFrame extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         entidadComBox1 = new javax.swing.JComboBox<>();
         jTextField1 = new javax.swing.JTextField();
+        buscarCheckBox = new javax.swing.JCheckBox();
         jPanel1 = new javax.swing.JPanel();
         aplicarCambiosBoton = new javax.swing.JButton();
         modificarCheckBox = new javax.swing.JCheckBox();
@@ -282,6 +288,14 @@ public class mainFrame extends javax.swing.JFrame {
             }
         });
 
+        buscarCheckBox.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        buscarCheckBox.setText("buscar");
+        buscarCheckBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                buscarCheckBoxItemStateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -295,13 +309,15 @@ public class mainFrame extends javax.swing.JFrame {
                         .addGap(15, 15, 15)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(entidadComBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(entidadComBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(buscarCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
+                .addComponent(buscarCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(entidadComBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -337,7 +353,7 @@ public class mainFrame extends javax.swing.JFrame {
                 .addComponent(aplicarCambiosBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(32, 32, 32))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(52, 52, 52)
+                .addGap(58, 58, 58)
                 .addComponent(modificarCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -427,7 +443,7 @@ public class mainFrame extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(21, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
@@ -458,28 +474,21 @@ public class mainFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_entidadComBoxItemStateChanged
 
-    private void modificarCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_modificarCheckBoxItemStateChanged
+    private void buscarCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_buscarCheckBoxItemStateChanged
         if (evt.getStateChange() == ItemEvent.SELECTED){
-            this.registrosTable.setEnabled(true);
             //activo los botones para modificar
-            this.eliminarBoton.setEnabled(true);
-            this.aplicarCambiosBoton.setEnabled(true);
-            //desactivo los botones de cambiar pagina para que solo pueda actualizar una pagina a la vez ya que el codigo depende de la info en la tabla
-            this.anterioresRegistrosBoton.setEnabled(false);
-            this.siguientesRegistrosBoton.setEnabled(false);
-
+            this.entidadComBox1.setEnabled(true);
+            this.jTextField1.setEnabled(true);
+            //desactivo modificar
+            this.modificarCheckBox.setSelected(false);
         }else if (evt.getStateChange() == ItemEvent.DESELECTED){
             this.registrosTable.setEnabled(false);
             llenarTabla();
             //desactivo los botones para modificar los otros
-            this.eliminarBoton.setEnabled(false);
-            this.aplicarCambiosBoton.setEnabled(false);
-            //rectivo los botones de cambiar pagina
-            this.anterioresRegistrosBoton.setEnabled(true);
-            this.siguientesRegistrosBoton.setEnabled(true);
-            
+            this.entidadComBox1.setEnabled(false);
+            this.jTextField1.setEnabled(false);
         }
-    }//GEN-LAST:event_modificarCheckBoxItemStateChanged
+    }//GEN-LAST:event_buscarCheckBoxItemStateChanged
 
     private void eliminarBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarBotonActionPerformed
         System.out.println("" + (int)(this.registrosTable.getValueAt(this.registrosTable.getSelectedRow(), 0)) + 1);
@@ -513,7 +522,7 @@ public class mainFrame extends javax.swing.JFrame {
          
         //no permitir cambiar las ids
         if(this.registrosTable.getSelectedColumn() == 0){
-            this.modificarCheckBox.setSelected(false);
+            this.buscarCheckBox.setSelected(false);
             JOptionPane.showMessageDialog(rootPane, "NO SE PUEDE MODIFICAR LAS IDS");
         }
     }//GEN-LAST:event_registrosTableMouseClicked
@@ -565,6 +574,30 @@ public class mainFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_entidadComBoxActionPerformed
 
+    private void modificarCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_modificarCheckBoxItemStateChanged
+        if (evt.getStateChange() == ItemEvent.SELECTED){
+            this.registrosTable.setEnabled(true);
+            //activo los botones para modificar
+            this.eliminarBoton.setEnabled(true);
+            this.aplicarCambiosBoton.setEnabled(true);
+            //desactivo los botones de cambiar pagina para que solo pueda actualizar una pagina a la vez ya que el codigo depende de la info en la tabla
+            this.anterioresRegistrosBoton.setEnabled(false);
+            this.siguientesRegistrosBoton.setEnabled(false);
+            //desactivo buscar
+            this.buscarCheckBox.setSelected(false);
+        }else if (evt.getStateChange() == ItemEvent.DESELECTED){
+            this.registrosTable.setEnabled(false);
+            llenarTabla();
+            //desactivo los botones para modificar los otros
+            this.eliminarBoton.setEnabled(false);
+            this.aplicarCambiosBoton.setEnabled(false);
+            //rectivo los botones de cambiar pagina
+            this.anterioresRegistrosBoton.setEnabled(true);
+            this.siguientesRegistrosBoton.setEnabled(true);
+            
+        }
+    }//GEN-LAST:event_modificarCheckBoxItemStateChanged
+
 
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -577,6 +610,7 @@ public class mainFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton anterioresRegistrosBoton;
     private javax.swing.JButton aplicarCambiosBoton;
+    private javax.swing.JCheckBox buscarCheckBox;
     private javax.swing.JButton eliminarBoton;
     private javax.swing.JButton eliminarBoton1;
     private javax.swing.JComboBox<String> entidadComBox;
