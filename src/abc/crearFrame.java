@@ -92,9 +92,135 @@ public class crearFrame extends javax.swing.JFrame {
         
         Connection c = ConexionSQL.conectar();
         
-        
-        String preparedString = "INSERT INTO " + entidad + "(" + this.crearTable.getColumnName(1);
-        for(int i = 2; i < this.crearTable.getColumnCount(); i++){
+        //validamos la entrada
+        int renglon = 0;
+        //validar genero
+            if (crearTable.getColumnName(0).toUpperCase().equals("GENERO") || crearTable.getColumnName(0).toUpperCase().equals("GÉNERO")){
+                String generos[] = {"MASCULINO", "FEMENINO", "OTRO", "NO BINARIO","PREFIERO NO DECIR"};
+                boolean validado = false;
+                
+                for (var g:generos){
+                    if(g.equals(crearTable.getValueAt(renglon, 0).toString().toUpperCase())){
+                        validado = true;
+                        break;
+                    }
+                }
+                
+                if (!validado){
+                    JOptionPane.showMessageDialog(null, "VERIFIQUE EL VALOR DE GÉNERO (DEBE SER UNO DE LOS SIGUIENTES): MASCULINO, FEMENINO, NO BINARIO, OTRO, PREFIERO NO DECIR");
+                    return;
+                }
+            }
+            
+            //validar telefono
+            if(crearTable.getColumnName(0).toUpperCase().equals("TELEFONO") || crearTable.getColumnName(0).toUpperCase().equals("TELÉFONO")){
+                String numeroDeTelefono = crearTable.getValueAt(renglon, 0).toString();
+                boolean telefonoValido = numeroDeTelefono.matches("\\d{8}") || numeroDeTelefono.matches("\\d{4}-\\d{4}") || numeroDeTelefono.matches("\\d{3}-\\d{3}-\\d{2}") || numeroDeTelefono.matches("\\d{3}-\\d{3}-\\d{4}") || numeroDeTelefono.matches("\\d{10}");
+         
+                if (!telefonoValido){
+                    JOptionPane.showMessageDialog(null, "VERIFIQUE EL NUMERO DE TELÉFONO, DEBE ESTAR EN UNO DE LOS SIGUIENTES FORMATOS: 12345678, 1234-5678, 123-456-78, 1234567890, 123-456-7890");
+                    return;
+                }
+                
+            }
+            
+            //validar promedio
+            if(crearTable.getColumnName(0).toUpperCase().equals("PROMEDIO")){
+                String promedio = crearTable.getValueAt(renglon, 0).toString();
+                boolean promedioValido = false;
+                try{
+                    double promedioD = Double.parseDouble(promedio);
+                    promedioValido = promedioD <= 10 && promedioD >= 0;
+                
+                }catch(NumberFormatException e){
+                    JOptionPane.showMessageDialog(null, "VERIFIQUE EL PROMEDIO, DEBE SER UN VALOR NUMÉRICO DEL 1 al 10");
+                    return;
+                }
+                if (!promedioValido){
+                    JOptionPane.showMessageDialog(null, "VERIFIQUE EL PROMEDIO, DEBE SER UN VALOR NUMÉRICO DEL 1 al 10");
+                    return;
+                }
+                
+            }
+            
+            //validar correo electrónico
+            if (crearTable.getColumnName(0).toUpperCase().contains("EMAIL") || crearTable.getColumnName(0).toUpperCase().contains("CORREO")) {
+                String correoElectronico = crearTable.getValueAt(renglon, 0).toString();
+
+                // Expresión regular para validar un correo electrónico
+                boolean correoValido = correoElectronico.matches("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
+
+                if (!correoValido) {
+                    JOptionPane.showMessageDialog(null, "VERIFIQUE EL CORREO ELECTRÓNICO, DEBE ESTAR EN UN FORMATO VÁLIDO: ejemplo@dominio.com");
+                    return;
+                }
+            }
+            
+        String preparedString = "INSERT INTO " + entidad + "(" + this.crearTable.getColumnName(0);
+        for(int i = 1; i < this.crearTable.getColumnCount(); i++){
+            
+            //validar genero
+            if (crearTable.getColumnName(i).toUpperCase().equals("GENERO") || crearTable.getColumnName(i).toUpperCase().equals("GÉNERO")){
+                String generos[] = {"MASCULINO", "FEMENINO", "OTRO", "NO BINARIO","PREFIERO NO DECIR"};
+                boolean validado = false;
+                
+                for (var g:generos){
+                    if(g.equals(crearTable.getValueAt(renglon, i).toString().toUpperCase())){
+                        validado = true;
+                        break;
+                    }
+                }
+                
+                if (!validado){
+                    JOptionPane.showMessageDialog(null, "VERIFIQUE EL VALOR DE GÉNERO (DEBE SER UNO DE LOS SIGUIENTES): MASCULINO, FEMENINO, NO BINARIO, OTRO, PREFIERO NO DECIR");
+                    return;
+                }
+            }
+            
+            //validar telefono
+            if(crearTable.getColumnName(i).toUpperCase().equals("TELEFONO") || crearTable.getColumnName(i).toUpperCase().equals("TELÉFONO")){
+                String numeroDeTelefono = crearTable.getValueAt(renglon, i).toString();
+                boolean telefonoValido = numeroDeTelefono.matches("\\d{8}") || numeroDeTelefono.matches("\\d{4}-\\d{4}") || numeroDeTelefono.matches("\\d{3}-\\d{3}-\\d{2}") || numeroDeTelefono.matches("\\d{3}-\\d{3}-\\d{4}") || numeroDeTelefono.matches("\\d{10}");
+         
+                if (!telefonoValido){
+                    JOptionPane.showMessageDialog(null, "VERIFIQUE EL NUMERO DE TELÉFONO, DEBE ESTAR EN UNO DE LOS SIGUIENTES FORMATOS: 12345678, 1234-5678, 123-456-78, 1234567890, 123-456-7890");
+                    return;
+                }
+                
+            }
+            
+            //validar promedio
+            if(crearTable.getColumnName(i).toUpperCase().equals("PROMEDIO")){
+                String promedio = crearTable.getValueAt(renglon, i).toString();
+                boolean promedioValido = false;
+                try{
+                    double promedioD = Double.parseDouble(promedio);
+                    promedioValido = promedioD <= 10 && promedioD >= 0;
+                
+                }catch(NumberFormatException e){
+                    JOptionPane.showMessageDialog(null, "VERIFIQUE EL PROMEDIO, DEBE SER UN VALOR NUMÉRICO DEL 1 al 10");
+                    return;
+                }
+                if (!promedioValido){
+                    JOptionPane.showMessageDialog(null, "VERIFIQUE EL PROMEDIO, DEBE SER UN VALOR NUMÉRICO DEL 1 al 10");
+                    return;
+                }
+                
+            }
+            
+            //validar correo electrónico
+            if (crearTable.getColumnName(i).toUpperCase().contains("EMAIL") || crearTable.getColumnName(i).toUpperCase().contains("CORREO")) {
+                String correoElectronico = crearTable.getValueAt(renglon, i).toString();
+
+                // Expresión regular para validar un correo electrónico
+                boolean correoValido = correoElectronico.matches("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
+
+                if (!correoValido) {
+                    JOptionPane.showMessageDialog(null, "VERIFIQUE EL CORREO ELECTRÓNICO, DEBE ESTAR EN UN FORMATO VÁLIDO: ejemplo@dominio.com");
+                    return;
+                }
+            }
+            
             preparedString += " , " + this.crearTable.getColumnName(i);
         }
         preparedString += ")";
@@ -102,7 +228,7 @@ public class crearFrame extends javax.swing.JFrame {
         
                 
         preparedString += " values ('" + this.crearTable.getValueAt(0,1) + "' ";
-        for (int i = 2; i < this.crearTable.getColumnCount(); i++) {
+        for (int i = 1; i < this.crearTable.getColumnCount(); i++) {
             preparedString += ", '" + this.crearTable.getValueAt(0, i) + "'";
         }
         preparedString += " )";

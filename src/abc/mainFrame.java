@@ -492,7 +492,6 @@ public class mainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_buscarCheckBoxItemStateChanged
 
     private void eliminarBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarBotonActionPerformed
-        System.out.println("" + (int)(this.registrosTable.getValueAt(this.registrosTable.getSelectedRow(), 0)) + 1);
         
         if(this.registrosTable.getSelectedRow() == -1){
             JOptionPane.showMessageDialog(null, "SELECCIONE UN RENGLON");
@@ -540,7 +539,7 @@ public class mainFrame extends javax.swing.JFrame {
             DefaultTableModel model = new DefaultTableModel();
             ResultSetMetaData metaData = rs.getMetaData();
            
-            for (int i = 1; i <= metaData.getColumnCount(); i++) {
+            for (int i = 2; i <= metaData.getColumnCount(); i++) {
                 String columnName = metaData.getColumnName(i);
                 model.addColumn(columnName);
             }
@@ -637,7 +636,6 @@ public class mainFrame extends javax.swing.JFrame {
             preparedString += " LIMIT " + (n  - m + 1)  + " OFFSET " + m + ";";
             
             //ejecutar el statement
-            System.out.println(preparedString);
             oSt = (Statement) c.createStatement();
             ResultSet rs = oSt.executeQuery(preparedString);
             
