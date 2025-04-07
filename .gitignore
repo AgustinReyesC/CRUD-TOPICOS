@@ -6,6 +6,3 @@ build.xml
 manifest.mf
 mssql-jdbc-12.4.2.jre11.jar
 
-# Ignore project directories
-nbproject/
-src/
