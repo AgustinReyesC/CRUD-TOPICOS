@@ -1,0 +1,11 @@
+/build/
+/dist/
+# Ignore specific files
+B\303\272squeda
+build.xml
+manifest.mf
+mssql-jdbc-12.4.2.jre11.jar
+
+# Ignore project directories
+nbproject/
+src/
