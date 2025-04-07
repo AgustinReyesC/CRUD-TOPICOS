@@ -58,7 +58,7 @@ public class mainFrame extends javax.swing.JFrame {
         this.jTextField1.setEnabled(false);
         this.entidadComBox1.setEnabled(false);
         
-        mostrarDesdeNRegistros(this.entidadComBox.getSelectedItem() + "", 0, paginaDeRegistro * 24, false, "", "");
+        mostrarDesdeNRegistros(this.entidadComBox.getSelectedItem() + "", 0, paginaDeRegistro * 23, false, "", "");
         
         //Crear el mapa para encontrar IDs
         dic = new HashMap<>();
@@ -138,7 +138,7 @@ public class mainFrame extends javax.swing.JFrame {
         //los hago no editables
         this.registrosTable.setModel(model);
         this.registrosTable.setEnabled(false);
-        this.buscarCheckBox.setSelected(false);
+        this.modificarCheckBox.setSelected(false);
             
         } catch (SQLException ex) {
           JOptionPane.showMessageDialog(null, "ERROR DE SQL " + ex.toString());
@@ -162,10 +162,10 @@ public class mainFrame extends javax.swing.JFrame {
         String atributo = dicBusqueda.get(entidadComBox1.getSelectedItem().toString());
 
         if (atributo != null && !valorBuscado.isEmpty()) {
-            mostrarDesdeNRegistros(entidad, (paginaDeRegistro - 1) * 24, paginaDeRegistro * 24, true, atributo, valorBuscado);
+            mostrarDesdeNRegistros(entidad, (paginaDeRegistro - 1) * 23, paginaDeRegistro * 23, true, atributo, valorBuscado);
         } else {
             // O mostrás todo, o mostrás un mensaje de advertencia
-            mostrarDesdeNRegistros(entidad, (paginaDeRegistro - 1) * 24, paginaDeRegistro * 24, false, "", "");
+            mostrarDesdeNRegistros(entidad, (paginaDeRegistro - 1) * 23, paginaDeRegistro * 23, false, "", "");
         }
     }
     
@@ -279,7 +279,7 @@ public class mainFrame extends javax.swing.JFrame {
         jLabel1.setText("BUSCAR POR:");
 
         entidadComBox1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        entidadComBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ALUMNO", "PROFESOR", "PROMEDIO" }));
+        entidadComBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NOMBRE", "MATRICULA", "PROMEDIO" }));
 
         jTextField1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -471,6 +471,7 @@ public class mainFrame extends javax.swing.JFrame {
     private void entidadComBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_entidadComBoxItemStateChanged
         if (evt.getStateChange() == ItemEvent.SELECTED){
            llenarTabla();
+           this.buscarCheckBox.setSelected(false);
         }
     }//GEN-LAST:event_entidadComBoxItemStateChanged
 
@@ -557,6 +558,17 @@ public class mainFrame extends javax.swing.JFrame {
         }  
     }//GEN-LAST:event_nuevoBotonActionPerformed
 
+    //funcion conseguida de: https://es.stackoverflow.com/questions/171179/como-validar-si-un-campo-de-texto-es-numerico-en-java?utm_source=chatgpt.com
+    public static boolean isNumeric(String str) {
+     try { 
+        Double.parseDouble(str); 
+     } catch(NumberFormatException e) { 
+        return false; 
+     }
+     return true;
+
+    }
+    
     private void eliminarBoton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarBoton1ActionPerformed
         
         try {
@@ -565,9 +577,101 @@ public class mainFrame extends javax.swing.JFrame {
             Logger.getLogger(mainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_eliminarBoton1ActionPerformed
-
+    
     private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyReleased
-        llenarTabla();
+        //llenarTabla();
+        //try
+            //incia la conexion
+            // Haz la unión triple (en realidad, cuádruple)
+                //crea la string
+                //le pone la sintaxis de sql
+            // Agrega la condición correcta para el elemento seleccionado
+            // Agrega la declaración a la variable que imprimir necesita
+            // Agrega las restricciones para cuántos se van a mostrar en la tabla (con los botones)
+            // Ejecutarlo
+
+       //except
+            //sql exception
+                //cerrar la conexion
+        
+        ((DefaultTableModel)this.registrosTable.getModel()).setRowCount(0);
+        
+        String preparedString = "";
+        try{
+            c = ConexionSQL.conectar();
+            Statement oSt;
+            
+            //statement inicial, un cuadruple join para conseguir todos los datos
+            preparedString = "SELECT concat(m.nombre1, ' ', m.nombre2, ' ', m.apellido_paterno, ' ', m.apellido_materno)"
+                    + " as nombre_maestro, mat.nombre as materia, e.nombre as nombre_alumno, e.matricula, ag.calificacion, e.promedio FROM "
+                    + "maestros m join materias mat join grupo g join alumno_grupo ag join estudiantes e on m.id_maestro = g.id_maestro "
+                    + "and mat.id_materia = g.id_materia and ag.id_grupo = g.id_grupo and ag.id_ESTUDIANTE = e.id";
+            
+            switch(this.entidadComBox1.getSelectedIndex()){
+                case 0:
+                    preparedString += " where concat(m.nombre1, ' ', m.nombre2, ' ', m.apellido_paterno, ' ',"
+                            + " m.apellido_materno) like '" + this.jTextField1.getText() + "%' or e.nombre like '" + this.jTextField1.getText() + "%'";
+                    
+                    break;
+                    
+                case 1:
+                    preparedString += " where e.matricula like '" + this.jTextField1.getText() + "%'";
+                    
+                    break;
+                    
+                case 2:
+                    if(this.jTextField1.getText().isBlank()){
+                        return;
+                    }
+                    if (!isNumeric(this.jTextField1.getText())){
+                        JOptionPane.showMessageDialog(rootPane, "PARA BUSCAR POR PROMEDIO EL VALOR DEBE SER UN NÚMERO");
+                    }
+                    preparedString += " where abs(e.promedio - " + this.jTextField1.getText() + ") <= 0.4";
+                    break;
+            }
+            
+            //añadir que solo muestre los que caben en la tabla (solo muestra desde m hasta n
+            int m = (paginaDeRegistro - 1) * 23;
+            int n = paginaDeRegistro * 23;
+            
+            preparedString += " LIMIT " + (n  - m + 1)  + " OFFSET " + m + ";";
+            
+            //ejecutar el statement
+            System.out.println(preparedString);
+            oSt = (Statement) c.createStatement();
+            ResultSet rs = oSt.executeQuery(preparedString);
+            
+            //lleno la tabla con esto
+            //ajusto la tabla
+            DefaultTableModel model = new DefaultTableModel();
+            ResultSetMetaData metaData = rs.getMetaData();
+           
+            for (int i = 1; i <= metaData.getColumnCount(); i++) {
+                String columnName = metaData.getColumnName(i);
+                model.addColumn(columnName);
+            }
+            
+            //pongo todos los registros
+            while (rs.next())  {
+                Object currRegistro[] = new Object[metaData.getColumnCount()];
+                for (int i = 1; i <= metaData.getColumnCount(); i++) {
+                    currRegistro[i - 1] = rs.getObject(i);
+                }
+                
+                model.addRow(currRegistro);
+            }
+        //los hago no editables
+        this.registrosTable.setModel(model);
+        this.registrosTable.setEnabled(false);
+        this.modificarCheckBox.setSelected(false);
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }finally{
+            currentStatement = preparedString;
+        }
+                
+        // En los botones de flecha
+            //Elige una de las 2 funciones dependiendo de si 'buscarComboBox' está seleccionado
     }//GEN-LAST:event_jTextField1KeyReleased
 
     private void entidadComBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_entidadComBoxActionPerformed
